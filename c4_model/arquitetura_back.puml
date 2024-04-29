@@ -1,0 +1,49 @@
+@startuml Aplicação
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+System_Boundary(c1, "Api de tarefas"){
+    Container(taskController, "TaskController"){
+        component getById
+        component getAll
+        component create
+        component updateById
+        component deleteById
+        component complete
+    }
+
+    Container(taskService, "TaskService"){
+        component getByIdService
+        component getAllService
+        component createService
+        component updateService
+        component deleteService
+        component completeService
+    }
+    System(taskRepository, "TaskRepository", "Camada responsavel pelo gerenciamento dos dados das tarefas"){
+        component save
+        component delete
+        component findById
+        component findAll
+    }
+}
+
+Rel(user, taskController, "Acessa")
+
+Rel(getById, getByIdService, "http")
+Rel(getAll, getAllService, "http")
+Rel(create, createService, "http")
+Rel(updateById, updateService, "http")
+Rel(deleteById, deleteService, "http")
+Rel(complete, completeService, "http")
+
+Rel(getByIdService, findById, "http")
+Rel(getAllService, findAll, "http")
+Rel(createService, save, "http")
+Rel(updateService, save, "http")
+Rel(deleteService, delete, "http")
+Rel(completeService, save, "http")
+
+
+
+@enduml

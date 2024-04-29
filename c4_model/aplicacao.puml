@@ -1,0 +1,14 @@
+@startuml Aplicação
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "usuario")
+System_Boundary(c1, "Contexto do sistema de tarefas"){
+    System(web, "Web gerenciamento de tarefas", "Web responsavel por gerenciar todas as tarefas cadastradas")
+    System(api, "API de gerenciamento de tarefas", "API responsavel por gerenciar e fornecer dados de todas as tarefas")
+    System(h2, "Gerenciador de dados", "Reponsavel por gerenciar todos dados da aplicação")
+}
+
+Rel(user, web, "Acessa")
+Rel(web, api, "HTTP")
+Rel(api, h2, "tcp")
+@enduml
