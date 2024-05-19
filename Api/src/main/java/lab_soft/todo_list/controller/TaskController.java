@@ -1,28 +1,36 @@
 package lab_soft.todo_list.controller;
 
 import lab_soft.todo_list.exception.exceptions.NotFoundEntityException;
+import lab_soft.todo_list.service.TaskDateService;
+import lab_soft.todo_list.service.TaskOpenService;
+import lab_soft.todo_list.service.TaskPeriodService;
 import lab_soft.todo_list.service.dto.TaskDto;
+import lab_soft.todo_list.service.interfaces.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.swagger.v3.oas.annotations.Operation;
-import lab_soft.todo_list.entity.Task;
-import lab_soft.todo_list.service.TaskService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lab_soft.todo_list.enums.TaskTypeEnum;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/task")
 public class TaskController {
-    @Autowired(required = true)
-    private TaskService taskService;
+    @Autowired
+    public TaskOpenService taskService;
+    @Autowired
+    public TaskPeriodService taskPeriodService;
+    @Autowired
+    public TaskDateService taskDateService;
 
     @GetMapping("/{id}")
     @Operation(summary = "List task found by id.")
-    public ResponseEntity<Task> getById(@PathVariable("id") long id){
+    public ResponseEntity<TaskDto.Response> getById(@PathVariable("id") long id){
         try{
-            Task taskFound = taskService.getById(id);
+            TaskDto.Response taskFound = taskService.getByIdToResponse(id);
             return new ResponseEntity<>(taskFound, HttpStatus.OK);
         }catch (NotFoundEntityException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,15 +42,16 @@ public class TaskController {
 
     @GetMapping("/")
     @Operation(summary = "List all task found.")
-    public ResponseEntity<List<Task>> getAll(){
+    public ResponseEntity<ArrayList<TaskDto.Response>> getAll(){
         return new ResponseEntity<>(taskService.getAll(), HttpStatus.OK);
     }
 
     @PostMapping("/")
     @Operation(summary = "Create task in data base.")
-    public ResponseEntity<Task> create(@RequestBody() TaskDto.Create taskDto){
+    public ResponseEntity<TaskDto.Response> create(@RequestBody() TaskDto.Create taskDto){
       try{
-          return new ResponseEntity<>(taskService.create(taskDto), HttpStatus.CREATED);
+          ITaskService service = this.getService(taskDto.type);
+          return new ResponseEntity<>(service.create(taskDto), HttpStatus.CREATED);
       }catch (Exception e){
           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
@@ -50,9 +59,11 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update data task found by id.")
-    public ResponseEntity<Task> updateById(@PathVariable("id") long id, @RequestBody() TaskDto.Create taskDto){
+    public ResponseEntity<TaskDto.Response> updateById(@PathVariable("id") long id, @RequestBody() TaskDto.Update taskDto){
         try{
-            return new ResponseEntity<>(taskService.update(id, taskDto), HttpStatus.OK);
+            ITaskService service = this.getService(taskDto.type);
+
+            return new ResponseEntity<>(service.update(id, taskDto), HttpStatus.OK);
         }catch (NotFoundEntityException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -78,7 +89,7 @@ public class TaskController {
 
     @PatchMapping("/complete/{id}")
     @Operation(summary = "Complete task found by id.")
-    public ResponseEntity<Task> complete(@PathVariable("id") long id){
+    public ResponseEntity<TaskDto.Response> complete(@PathVariable("id") long id){
         try{
             return new ResponseEntity<>(taskService.complete(id), HttpStatus.OK);
         }catch (NotFoundEntityException e){
@@ -88,6 +99,19 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    private ITaskService getService(int type){
+       if(type == TaskTypeEnum.DATE.ordinal() + 1){
+           return this.taskDateService;
+       }
+
+        if(type == TaskTypeEnum.Period.ordinal() + 1){
+            return this.taskPeriodService;
+
+        }
+
+        return this.taskService;
     }
 
 }

@@ -3,6 +3,8 @@ package lab_soft.todo_list.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -22,6 +24,15 @@ public class Task {
     @Schema(description = "Summary of the task to be done.")
     @Size(min = 15, message = "Min length  is 15 characters.")
     private String description;
+
+    @Schema(description = "Informs task priority.")
+    @Min(1)
+    @Max(3)
+    private int priority;
+
+    private Date completionDate;
+
+    private int type;
 
     @Schema(description = "Informs task has been completed.")
     private Boolean completed;
