@@ -1,20 +1,17 @@
 FROM ubuntu:latest AS build
 
-RUN apt-get update -y && apt-get upgrade -y
+RUN [ -e /bin/sh ] || (echo "/bin/sh not found" && exit 1)
 
-RUN apt-get install -y openjdk-17-jdk
-
-RUN apt-get install -y maven
+RUN apt-get update && apt-get install -y openjdk-21-jdk maven
 
 COPY . .
+RUN mvn clean install
 
-RUN mvn clean install -e
+FROM openjdk:21-jdk-slim
 
-FROM openjdk:17-jdk-slim
+RUN [ -e /bin/sh ] || (echo "/bin/sh not found" && exit 1)
 
 EXPOSE 8080
-
-
-COPY --from=build target/*.jar app.jar
+COPY --from=build target/todo-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
