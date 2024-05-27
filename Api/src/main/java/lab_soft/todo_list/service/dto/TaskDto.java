@@ -1,9 +1,12 @@
 package lab_soft.todo_list.service.dto;
 
+import lombok.Setter;
+
 import java.util.Date;
 
 public class TaskDto {
     public static class Create{
+
         public String description;
         public int priority;
 
@@ -12,7 +15,6 @@ public class TaskDto {
         public Date completionDate;
 
         public int days;
-
     }
 
     public static class Update{
