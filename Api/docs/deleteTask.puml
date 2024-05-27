@@ -1,0 +1,36 @@
+@startuml
+title Diagrama de Sequência - Deletar Tarefa
+actor Usuário
+Boundary Frontend
+Boundary SpringBoot
+Control TaskController
+Participant TaskService
+Participant TaskRepository
+Entity Task
+Database TodoList
+Usuário -> Frontend: Clica no botão de deletar tarefa
+activate Usuário
+activate Frontend
+Frontend -> SpringBoot: Delete /task/{id}
+activate SpringBoot
+SpringBoot -> TaskController: delete(id)
+activate TaskController
+TaskController -> TaskService: delete(id)
+activate TaskService
+TaskService -> TaskRepository: findById(id)
+activate TaskRepository
+TaskRepository -> TodoList: SELECT * FROM Tasks WHERE id = ?
+deactivate TaskRepository
+TaskRepository --> TaskService: Found task
+TaskService -> Task: deleteById(id)
+TaskService -> TaskRepository: deleteById(taskUpdated)
+activate TaskRepository
+TaskRepository -> TodoList: Delete from Tasks WHERE id = ?
+deactivate TaskRepository
+TaskController --> SpringBoot: ResponseEntity.ok()
+deactivate SpringBoot
+SpringBoot --> Frontend: ResponseEntity.ok()
+deactivate Frontend
+Frontend --> Usuário: Remove a tarefa da lista
+deactivate Usuário
+@enduml
