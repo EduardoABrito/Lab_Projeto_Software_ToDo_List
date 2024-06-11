@@ -1,23 +1,12 @@
 import axios, { AxiosInstance } from "axios";
+import type { TaskType } from "./types";
 
-export default class EventService {
-  private httpServer: AxiosInstance;
+const httpServer: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL_API,
+});
 
-  constructor() {
-    this.httpServer = this.setHttpServer();
-  }
+export const getAll = async (): Promise<TaskType[]> => {
+  const { data } = await httpServer.get("/task");
 
-  private setHttpServer() {
-    const axiosCreate = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_WOLFFOX_ADMIN_BASE_URL_API,
-    });
-
-    return axiosCreate;
-  }
-
-  async getAll() {
-    const { data } = await this.httpServer.get("/task");
-
-    return data;
-  }
-}
+  return data;
+};

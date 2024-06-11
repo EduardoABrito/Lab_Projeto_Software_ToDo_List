@@ -11,12 +11,22 @@ import { Icon } from "@iconify/react";
 
 //Component
 import TaskList from "@src/views/home/task-list";
+import { TaskMockList } from "@src/services/todo-list/mock/indext";
+import { useQuery } from "@tanstack/react-query";
+import { ReactQueryEnum } from "@src/enum/react-query-enum.enum";
+import { getAll } from "@src/services/todo-list";
 
 // Mock
-import { TaskMockList } from "@src/services/todo-list-api/mock/indext";
 
 export default function Home() {
-  const mockTask = TaskMockList;
+  const useQueryTask = useQuery({
+    queryKey: [ReactQueryEnum.LIST_TASK],
+    queryFn: getAll,
+  });
+
+  if (useQueryTask.isLoading) {
+    return <></>;
+  }
 
   return (
     <Fragment>
@@ -45,11 +55,17 @@ export default function Home() {
           <Icon icon="ri:add-box-fill" fontSize={40} />
         </IconButton>
       </Box>
-      <TaskList data={mockTask.filter((task) => task.completed == false)} />
+      <TaskList
+        data={
+          useQueryTask.data?.filter((task) => task.completed == false) || []
+        }
+      />
       <Box display={"flex"} justifyContent={"space-between"} my={2}>
         <Typography variant="h5">Concluido:</Typography>
       </Box>
-      <TaskList data={mockTask.filter((task) => task.completed)} />
+      <TaskList
+        data={useQueryTask.data?.filter((task) => task.completed) || []}
+      />
     </Fragment>
   );
 }
