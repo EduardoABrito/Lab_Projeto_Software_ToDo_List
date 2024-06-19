@@ -1,6 +1,11 @@
 export type TaskType = {
   id: number;
-  name: string;
-  date: Date;
+  description: string;
   completed: boolean;
+  priority: number;
+  days?: number;
+  completionDate?: Date;
+  type: number;
+  status: string;
+  createdAt?: Date;
 };

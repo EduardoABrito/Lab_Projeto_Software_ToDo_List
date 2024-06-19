@@ -2,10 +2,10 @@
 import { Grid } from "@mui/material";
 
 // Componente
-import CardTask from "@src/components/card-task";
+import CardTask from "../../../components/card-task";
 
 // Type
-import type { TaskType } from "@src/services/todo-list/types";
+import type { TaskType } from "../../../services/todo-list/types";
 
 interface props {
   data: TaskType[];

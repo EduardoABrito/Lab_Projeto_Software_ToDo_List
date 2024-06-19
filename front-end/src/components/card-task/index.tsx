@@ -8,13 +8,74 @@ import { Icon } from "@iconify/react";
 import OverlayTask from "../overlay-task/indext";
 
 // Types
-import type { TaskType } from "@src/services/todo-list-api/types";
+import type { TaskType } from "../../services/todo-list/types";
+import Swal from "sweetalert2";
+import { completeTaskById, deleteTaskById } from "../../services/todo-list";
+import { useQueryClient } from "@tanstack/react-query";
+import { ReactQueryEnum } from "../../enum/react-query-enum.enum";
 
 interface props {
   data: TaskType;
 }
 
 const CardTask = ({ data }: props) => {
+  const queryClient = useQueryClient();
+
+  const deleteTask = () => {
+    Swal.fire({
+      title: `Deseja deletar a tarefa?`,
+      text: `Essa ação e irreversivel.`,
+      showDenyButton: true,
+      confirmButtonText: "Deletar",
+      denyButtonText: `Cancelar`,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteTaskById(data.id);
+
+        queryClient.setQueryData(
+          [ReactQueryEnum.LIST_TASK],
+          (taskCache: TaskType[]) => taskCache.filter((x) => x.id != data.id)
+        );
+
+        Swal.fire({
+          title: "Deletado!",
+          text: `Tarefa deletada com sucesso`,
+          icon: "success",
+          toast: true,
+          timer: 3000,
+          position: "top-end",
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
+
+  const completeTask = () => {
+    Swal.fire({
+      title: `Deseja completar a tarefa?`,
+      text: `Essa ação e irreversivel.`,
+      showDenyButton: true,
+      confirmButtonText: "Completar",
+      denyButtonText: `Cancelar`,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await completeTaskById(data.id);
+
+        queryClient.refetchQueries({ queryKey: [ReactQueryEnum.LIST_TASK] });
+
+        Swal.fire({
+          title: "Deletado!",
+          text: `Tarefa deletada com sucesso`,
+          icon: "success",
+          toast: true,
+          timer: 3000,
+          position: "top-end",
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
+
   return (
     <Box
       boxShadow={1}
@@ -29,7 +90,7 @@ const CardTask = ({ data }: props) => {
     >
       <Box textAlign={{ md: "center" }}>
         <Typography variant="h6" noWrap>
-          {data.name}
+          {data.description}
         </Typography>
         <Typography variant="subtitle2">11 de abril 2024</Typography>
       </Box>
@@ -48,10 +109,10 @@ const CardTask = ({ data }: props) => {
         <IconButton color="warning">
           <Icon icon="mingcute:edit-4-fill" fontSize={30} />
         </IconButton>
-        <IconButton color="error">
+        <IconButton color="error" onClick={deleteTask}>
           <Icon icon="gg:trash" fontSize={30} />
         </IconButton>
-        <IconButton color="success">
+        <IconButton color="success" onClick={completeTask}>
           <Icon icon="lets-icons:check-fill" fontSize={30} />
         </IconButton>
       </Box>

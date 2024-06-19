@@ -10,15 +10,12 @@ import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { Icon } from "@iconify/react";
 
 //Component
-import TaskList from "@src/views/home/task-list";
-import { TaskMockList } from "@src/services/todo-list/mock/indext";
+import TaskList from "../views/home/task-list";
 import { useQuery } from "@tanstack/react-query";
-import { ReactQueryEnum } from "@src/enum/react-query-enum.enum";
-import { getAll } from "@src/services/todo-list";
+import { ReactQueryEnum } from "../enum/react-query-enum.enum";
+import { getAll } from "../services/todo-list";
 
-// Mock
-
-export default function Home() {
+const HomePage = () => {
   const useQueryTask = useQuery({
     queryKey: [ReactQueryEnum.LIST_TASK],
     queryFn: getAll,
@@ -68,4 +65,5 @@ export default function Home() {
       />
     </Fragment>
   );
-}
+};
+export default HomePage;

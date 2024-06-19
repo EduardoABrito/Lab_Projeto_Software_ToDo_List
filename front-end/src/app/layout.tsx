@@ -8,8 +8,8 @@ import "./globals.css";
 import { Container, ThemeProvider } from "@mui/material";
 
 // Theme
-import { Theme } from "@src/@core/components/theme/page";
-import ReactQueryProvider from "@src/contexts/reactQueryProvider";
+import { Theme } from "../@core/components/theme";
+import ReactQueryProvider from "../contexts/reactQueryProvider";
 
 export const metadata: Metadata = {
   title: "To Do list",
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ptBr">
+    <html lang="pt-br">
       <body>
         <ReactQueryProvider>
           <Container>

@@ -6,7 +6,19 @@ const httpServer: AxiosInstance = axios.create({
 });
 
 export const getAll = async (): Promise<TaskType[]> => {
-  const { data } = await httpServer.get("/task");
+  const { data } = await httpServer.get("/task/");
+
+  return data;
+};
+
+export const deleteTaskById = async (id: number): Promise<void> => {
+  const { data } = await httpServer.delete(`/task/${id}`);
+
+  return data;
+};
+
+export const completeTaskById = async (id: number): Promise<void> => {
+  const { data } = await httpServer.put(`/task/complete/${id}`);
 
   return data;
 };
