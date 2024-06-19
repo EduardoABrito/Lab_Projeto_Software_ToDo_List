@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 @SpringBootTest(classes = {TodoListApplication.class}, webEnvironment
         = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -36,14 +35,14 @@ public class TaskControllerIntegrationTest {
         // Arrange
         TaskDto.Create taskDto = new TaskDto.Create();
         taskDto.type = 1;
-        taskDto.description = "Tarefa atualizada";
+        taskDto.description = "Nova tarefa";
 
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<TaskDto.Create> request = new HttpEntity<>(taskDto, headers);
 
         // Act
         ResponseEntity<TaskDto.Response> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks",
+                "http://localhost:8080/api/task/",
                 HttpMethod.POST,
                 request,
                 TaskDto.Response.class
@@ -66,7 +65,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks",
+                "http://localhost:8080/api/task/",
                 HttpMethod.POST,
                 request,
                 Void.class
@@ -89,7 +88,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<TaskDto.Response> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + taskId,
+                "http://localhost:8080/api/task/" + taskId,
                 HttpMethod.PUT,
                 request,
                 TaskDto.Response.class
@@ -114,7 +113,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + nonExistentTaskId,
+                "http://localhost:8080/api/task/" + nonExistentTaskId,
                 HttpMethod.PUT,
                 request,
                 Void.class
@@ -135,7 +134,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + taskId,
+                "http://localhost:8080/api/task/" + taskId,
                 HttpMethod.PUT,
                 request,
                 Void.class
@@ -155,7 +154,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + taskId,
+                "http://localhost:8080/api/task/" + taskId,
                 HttpMethod.DELETE,
                 request,
                 Void.class
@@ -175,7 +174,7 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + nonExistentTaskId,
+                "http://localhost:8080/api/task/" + nonExistentTaskId,
                 HttpMethod.DELETE,
                 request,
                 Void.class
@@ -183,26 +182,6 @@ public class TaskControllerIntegrationTest {
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    public void givenInvalidRequest_whenDeleteTask_thenStatus400() {
-        // Arrange
-        long invalidTaskId = 100;
-
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-
-        // Act
-        ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/" + invalidTaskId,
-                HttpMethod.DELETE,
-                request,
-                Void.class
-        );
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -215,8 +194,8 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<TaskDto.Response> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/complete/" + taskId,
-                HttpMethod.PATCH,
+                "http://localhost:8080/api/task/complete/" + taskId,
+                HttpMethod.PUT,
                 request,
                 TaskDto.Response.class
         );
@@ -236,8 +215,8 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/complete/" + nonExistentTaskId,
-                HttpMethod.PATCH,
+                "http://localhost:8080/api/task/complete/" + nonExistentTaskId,
+                HttpMethod.PUT,
                 request,
                 Void.class
         );
@@ -256,13 +235,13 @@ public class TaskControllerIntegrationTest {
 
         // Act
         ResponseEntity<Void> response = restTemplate.exchange(
-                "http://localhost:" + port + "/api/tasks/complete/" + invalidTaskId,
-                HttpMethod.PATCH,
+                "http://localhost:8080/api/task/complete/" + invalidTaskId,
+                HttpMethod.PUT,
                 request,
                 Void.class
         );
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

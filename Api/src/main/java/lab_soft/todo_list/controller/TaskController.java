@@ -94,7 +94,7 @@ public class TaskController {
 
     }
 
-    @PatchMapping("/complete/{id}")
+    @PutMapping("/complete/{id}")
     @CrossOrigin()
     @Operation(summary = "Complete task found by id.")
     public ResponseEntity<TaskDto.Response> complete(@PathVariable("id") long id){
