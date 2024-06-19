@@ -4,12 +4,9 @@ import { Metadata } from "next";
 // Style
 import "./globals.css";
 
-// Material UI
-import { Container, ThemeProvider } from "@mui/material";
-
 // Theme
-import { Theme } from "../@core/components/theme";
-import ReactQueryProvider from "../contexts/reactQueryProvider";
+import ReactQueryProvider from "@src/contexts/reactQueryProvider";
+import ThemeProviderCustom from "@src/contexts/themeProvider";
 
 export const metadata: Metadata = {
   title: "To Do list",
@@ -21,12 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-Br">
       <body>
         <ReactQueryProvider>
-          <Container>
-            <ThemeProvider theme={Theme}>{children}</ThemeProvider>
-          </Container>
+          <ThemeProviderCustom>{children}</ThemeProviderCustom>
         </ReactQueryProvider>
       </body>
     </html>
