@@ -14,6 +14,7 @@ import TaskList from "../views/home/task-list";
 import { useQuery } from "@tanstack/react-query";
 import { ReactQueryEnum } from "../enum/react-query-enum.enum";
 import { getAll } from "../services/todo-list";
+import DialogCreateTask from "@src/components/dialog-create-task";
 
 const HomePage = () => {
   const useQueryTask = useQuery({
@@ -48,9 +49,7 @@ const HomePage = () => {
       />
       <Box display={"flex"} justifyContent={"space-between"} my={2}>
         <Typography variant="h5">A Fazer:</Typography>
-        <IconButton color={"primary"}>
-          <Icon icon="ri:add-box-fill" fontSize={40} />
-        </IconButton>
+        <DialogCreateTask />
       </Box>
       <TaskList
         data={

@@ -16,3 +16,6 @@ body {
   height: 30%;
   transition: background-color 0.5s ease-in-out;
 }
+.css-twia2z-MuiPaper-root-MuiDialog-paper {
+  background-color: #033785;
+}
