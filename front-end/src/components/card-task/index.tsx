@@ -1,5 +1,5 @@
 // Material UI
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, LinearProgress, Typography } from "@mui/material";
 
 //Icon
 import { Icon } from "@iconify/react";
@@ -18,6 +18,7 @@ interface props {
   data: TaskType;
 }
 
+const priorityColor = ["error", "warning", "success", "secondary"];
 const CardTask = ({ data }: props) => {
   const queryClient = useQueryClient();
 
@@ -116,6 +117,12 @@ const CardTask = ({ data }: props) => {
           <Icon icon="lets-icons:check-fill" fontSize={30} />
         </IconButton>
       </Box>
+      {!data.completed && (
+        <LinearProgress
+          color={priorityColor[data.priority] as any}
+          sx={{ height: 8, borderRadius: 2 }}
+        />
+      )}
       {data.completed && <OverlayTask />}
     </Box>
   );

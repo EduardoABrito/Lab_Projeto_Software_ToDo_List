@@ -17,5 +17,11 @@ body {
   transition: background-color 0.5s ease-in-out;
 }
 .css-twia2z-MuiPaper-root-MuiDialog-paper {
-  background-color: #033785;
+  background-color: #021b41;
+  border-radius: 10px;
+  border: 1px solid white;
+}
+.MuiOutlinedInput-root {
+  border: rgba(255, 255, 255, 0.548) solid 1px;
+  color: white;
 }

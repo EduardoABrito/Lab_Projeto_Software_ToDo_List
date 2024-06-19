@@ -9,28 +9,35 @@ import {
   FormControlLabel,
   FormLabel,
   IconButton,
+  LinearProgress,
   Radio,
   RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
 import { Fragment, useState } from "react";
-
+const priorityColor = ["error", "warning", "success", "secondary"];
 const DialogCreateTask = () => {
   const [open, setOpen] = useState(true);
   const [type, setType] = useState<number>();
-  const [priority, setPriority] = useState<number>();
+  const [priority, setPriority] = useState<number>(3);
   const [description, setDescription] = useState<string>("");
   const handleClickOpen = () => {
+    setType(3);
+    setPriority(3);
+    setDescription("");
     setOpen(true);
   };
 
   const handleClose = () => {
+    setType(3);
+    setPriority(3);
+    setDescription("");
     setOpen(false);
   };
   return (
     <Fragment>
-      <IconButton color={"primary"} onClick={() => setOpen(true)}>
+      <IconButton color={"primary"} onClick={handleClickOpen}>
         <Icon icon="ri:add-box-fill" fontSize={40} />
       </IconButton>
 
@@ -70,7 +77,7 @@ const DialogCreateTask = () => {
             >
               <FormControlLabel
                 value={0}
-                control={<Radio color="secondary" />}
+                control={<Radio color="secondary" sx={{}} />}
                 label="Alta"
               />
               <FormControlLabel
@@ -85,6 +92,10 @@ const DialogCreateTask = () => {
               />
             </RadioGroup>
           </FormControl>
+          <LinearProgress
+            color={priorityColor[priority] as any}
+            sx={{ height: 8, borderRadius: 2 }}
+          />
           <FormControl sx={{ my: 2 }}>
             <FormLabel id="tipo-tarefa-label" color="secondary">
               Tipo Tarefa
@@ -135,7 +146,7 @@ const DialogCreateTask = () => {
         <DialogActions>
           <Button
             onClick={handleClose}
-            variant="outlined"
+            variant="contained"
             color="error"
             fullWidth
           >
@@ -144,7 +155,7 @@ const DialogCreateTask = () => {
           <Button
             onClick={handleClose}
             autoFocus
-            variant="outlined"
+            variant="contained"
             color="success"
             fullWidth
           >
