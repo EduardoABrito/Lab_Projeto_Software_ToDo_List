@@ -19,10 +19,11 @@ import { ConvertSubTitle } from "@src/utils/convert-sub-title.util";
 
 interface props {
   data: TaskType;
+  onEdit: () => void;
 }
 
 const priorityColor = ["error", "warning", "success", "secondary"];
-const CardTask = ({ data }: props) => {
+const CardTask = ({ onEdit, data }: props) => {
   const queryClient = useQueryClient();
 
   const deleteTask = () => {
@@ -113,7 +114,7 @@ const CardTask = ({ data }: props) => {
           />
         </Box>
         <Box display={"flex"} justifyContent={"space-around"}>
-          <IconButton color="warning">
+          <IconButton color="warning" onClick={onEdit}>
             <Icon icon="mingcute:edit-4-fill" fontSize={30} />
           </IconButton>
           <IconButton color="error" onClick={deleteTask}>

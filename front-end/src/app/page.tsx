@@ -26,7 +26,7 @@ const HomePage = () => {
       setTask(data);
       return data;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 
   const [tasks, setTask] = useState<TaskType[]>();
