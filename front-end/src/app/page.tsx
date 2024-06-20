@@ -16,6 +16,7 @@ import { ReactQueryEnum } from "../enum/react-query-enum.enum";
 import { getAll } from "../services/todo-list";
 import DialogCreateTask from "@src/components/dialog-create-task";
 import { TaskType } from "@src/services/todo-list/types";
+import LoadingCustom from "@src/components/loading";
 
 const HomePage = () => {
   const useQueryTask = useQuery({
@@ -25,6 +26,7 @@ const HomePage = () => {
       setTask(data);
       return data;
     },
+    refetchOnWindowFocus: false,
   });
 
   const [tasks, setTask] = useState<TaskType[]>();
@@ -38,10 +40,6 @@ const HomePage = () => {
       )
     );
   };
-
-  if (useQueryTask.isLoading) {
-    return <></>;
-  }
 
   return (
     <Fragment>
@@ -67,13 +65,40 @@ const HomePage = () => {
       />
       <Box display={"flex"} justifyContent={"space-between"} my={2}>
         <Typography variant="h5">A Fazer:</Typography>
-        <DialogCreateTask />
+        <Box display={"flex"}>
+          <DialogCreateTask />
+          <IconButton
+            color="warning"
+            onClick={() => useQueryTask.refetch()}
+            disabled={useQueryTask.isRefetching || useQueryTask.isLoading}
+          >
+            <Icon
+              icon={
+                useQueryTask.isRefetching || useQueryTask.isLoading
+                  ? "line-md:loading-loop"
+                  : "tabler:rotate"
+              }
+              fontSize={35}
+            />
+          </IconButton>
+        </Box>
       </Box>
-      <TaskList data={tasks?.filter((task) => task.completed == false) || []} />
-      <Box display={"flex"} justifyContent={"space-between"} my={2}>
+
+      {useQueryTask.isLoading ? (
+        <LoadingCustom title="Aguarde o carregamento das tarefas a fazer" />
+      ) : (
+        <TaskList
+          data={tasks?.filter((task) => task.completed == false) || []}
+        />
+      )}
+      <Box display={"flex"} justifyContent={"space-between"} my={2} pb={1}>
         <Typography variant="h5">Concluido:</Typography>
       </Box>
-      <TaskList data={tasks?.filter((task) => task.completed) || []} />
+      {useQueryTask.isLoading ? (
+        <LoadingCustom title="Aguarde o carregamento das tarefas concluidas" />
+      ) : (
+        <TaskList data={tasks?.filter((task) => task.completed) || []} />
+      )}
     </Fragment>
   );
 };

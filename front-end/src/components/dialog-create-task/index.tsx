@@ -15,26 +15,98 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { ReactQueryEnum } from "@src/enum/react-query-enum.enum";
+import { createTask } from "@src/services/todo-list";
+import { TaskCreateDto } from "@src/services/todo-list/dto/task.dto";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addDays } from "date-fns";
 import { Fragment, useState } from "react";
+import Swal from "sweetalert2";
 const priorityColor = ["error", "warning", "success", "secondary"];
+
+const avisoCampo = (campo: string) => {
+  Swal.fire({
+    title: "Campo obrigatorio!",
+    text: `Favor preencher o campo: ${campo}`,
+    icon: "warning",
+    toast: true,
+    timer: 3000,
+    position: "top-end",
+    showConfirmButton: false,
+  });
+};
+
 const DialogCreateTask = () => {
-  const [open, setOpen] = useState(true);
-  const [type, setType] = useState<number>();
+  const [open, setOpen] = useState(false);
+  const [type, setType] = useState<number | null>();
   const [priority, setPriority] = useState<number>(3);
   const [description, setDescription] = useState<string>("");
+  const [date, setDate] = useState<Date | null>();
+  const [days, setDays] = useState<number | null>(0);
+
+  const queryClient = useQueryClient();
+
   const handleClickOpen = () => {
-    setType(3);
+    setType(null);
     setPriority(3);
     setDescription("");
     setOpen(true);
+    setDate(null);
+    setDays(null);
   };
 
   const handleClose = () => {
-    setType(3);
-    setPriority(3);
-    setDescription("");
     setOpen(false);
   };
+
+  const submit = async () => {
+    if (!description) {
+      return avisoCampo("descrição");
+    }
+
+    if (priority == 3) {
+      return avisoCampo("Prioridade");
+    }
+
+    if (!type) {
+      return avisoCampo("Tipo Tarefa");
+    }
+
+    if (type == 2 && !days) {
+      return avisoCampo("Dias");
+    }
+
+    if (type == 1 && !date) {
+      return avisoCampo("Data");
+    }
+
+    const payload: TaskCreateDto = {
+      description,
+      type: type as number,
+      priority,
+      completionDate:
+        type == 1
+          ? date!
+          : addDays(Date.now(), days ? parseInt(days as any) : 0),
+    };
+    await createTask(payload);
+    queryClient.refetchQueries({ queryKey: [ReactQueryEnum.LIST_TASK] });
+    handleClose();
+    Swal.fire({
+      title: "Sucesso!",
+      text: `Tarefa criada com sucesso!`,
+      icon: "success",
+      timer: 3000,
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+    });
+  };
+
+  const mutation = useMutation({
+    onMutate: submit,
+  });
+
   return (
     <Fragment>
       <IconButton color={"primary"} onClick={handleClickOpen}>
@@ -50,14 +122,14 @@ const DialogCreateTask = () => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          <Typography variant="h5" textAlign={"center"}>
+          <Typography fontSize={30} textAlign={"center"}>
             Cadastrar Tarefa
           </Typography>
         </DialogTitle>
         <DialogContent>
           <TextField
             variant="outlined"
-            label="Nome"
+            label="Descrição"
             fullWidth
             sx={{ my: 2 }}
             color="secondary"
@@ -107,32 +179,33 @@ const DialogCreateTask = () => {
               onChange={(e) => setType(e.target.value as any)}
             >
               <FormControlLabel
-                value={0}
+                value={1}
                 control={<Radio color="secondary" />}
                 label="Data"
               />
               <FormControlLabel
-                value={1}
+                value={2}
                 control={<Radio color="secondary" />}
                 label="Prazo"
               />
               <FormControlLabel
-                value={2}
+                value={3}
                 control={<Radio color="secondary" />}
                 label="Livre"
               />
             </RadioGroup>
           </FormControl>
-          {type == 0 && (
+          {type == 1 && (
             <TextField
               variant="outlined"
               type="datetime-local"
               fullWidth
               sx={{ my: 2 }}
               color="secondary"
+              onChange={(e: any) => setDate(new Date(e.target.value))}
             />
           )}
-          {type == 1 && (
+          {type == 2 && (
             <TextField
               variant="outlined"
               label="Dias"
@@ -140,6 +213,7 @@ const DialogCreateTask = () => {
               fullWidth
               sx={{ my: 2 }}
               color="secondary"
+              onChange={(e: any) => setDays(e.target.value)}
             />
           )}
         </DialogContent>
@@ -153,8 +227,7 @@ const DialogCreateTask = () => {
             Fechar
           </Button>
           <Button
-            onClick={handleClose}
-            autoFocus
+            onClick={() => mutation.mutate()}
             variant="contained"
             color="success"
             fullWidth
