@@ -8,6 +8,7 @@ import lab_soft.todo_list.repository.TaskRepository;
 import lab_soft.todo_list.service.dto.TaskDto;
 import lab_soft.todo_list.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class TaskService {
     protected TaskRepository taskRepository;
 
     public ArrayList<TaskDto.Response> getAll(){
-        return this.mapperResponse(taskRepository.findAll());
+        return this.mapperResponse(taskRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")));
     }
 
     public TaskDto.Response getByIdToResponse(long id){

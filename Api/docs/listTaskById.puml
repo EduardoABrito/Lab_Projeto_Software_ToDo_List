@@ -1,0 +1,47 @@
+@startuml
+title Diagrama de Sequencia - Listar Tarefa Por ID
+actor Usuário
+Boundary Frontend
+Boundary SpringBoot
+Control taskController
+Entity Task
+Participant taskService
+Participant taskRepository
+Boundary TypedQuery
+Participant Hibernate
+Database TodoList
+activate SpringBoot
+Usuário -> Frontend: Listar tarefa pelo id
+activate Usuário
+activate Frontend
+activate TodoList
+Frontend -> SpringBoot: GET api/tasks/1
+group TodoListApplication [Spring Boot Java Application]
+SpringBoot -> taskController: getById(id)
+activate taskController
+taskController -> taskService: getById(id)
+activate taskService
+taskService -> taskRepository: getById(id)
+activate taskRepository
+taskRepository -> TypedQuery: findById(id)
+group JPA Framework[Hibernate]
+Activate TypedQuery
+TypedQuery -> Hibernate: orElseThrow()
+Activate Hibernate
+Hibernate -> TodoList: SELECT * FROM Tasks where id = 1
+TodoList --> Hibernate: Table Tasks
+Hibernate --> TypedQuery: Table Tasks
+TypedQuery --> taskRepository: Task
+destroy TypedQuery
+end
+taskRepository --> taskService: TaskDto
+destroy taskRepository
+taskService --> taskController: TaskDto
+destroy taskService
+taskController --> SpringBoot: ResponseEntity<Task> ResponseEntity.ok(resource)
+destroy taskController
+end
+SpringBoot --> Frontend : ResponseEntity<Task> ResponseEntity.ok(resource)
+Frontend --> Usuário: Task
+@enduml
+Diagrama gerado pelo código acima

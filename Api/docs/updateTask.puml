@@ -1,0 +1,40 @@
+@startuml
+title Diagrama de Sequência - Atualizar Tarefa
+actor Usuário
+Boundary Frontend
+Boundary SpringBoot
+Control TaskController
+Participant TaskService
+Participant TaskRepository
+Entity Task
+Database TodoList
+Usuário -> Frontend: Clica no botão de atualizar tarefa
+Usuário -> Frontend: Altere os dados necessarios
+Usuário -> Frontend: Clica no botão de salvar
+activate Usuário
+activate Frontend
+Frontend -> SpringBoot: Put /task/{id}
+activate SpringBoot
+SpringBoot -> TaskController: UpdateById(id, TaskDto.Update)
+activate TaskController
+TaskController -> TaskService: UpdateById(id, TaskDto.Update)
+activate TaskService
+TaskService -> TaskRepository: findById(id)
+activate TaskRepository
+TaskRepository -> TodoList: SELECT * FROM Tasks WHERE id = ?
+deactivate TaskRepository
+TaskRepository --> TaskService: Found task
+TaskService -> Task: setDescription(taskDto.description);
+TaskService -> Task: setPriority(taskDto.priority);
+TaskService -> Task: setCompletionDate(taskDto.completionDate);
+TaskService -> TaskRepository: save(taskUpdated)
+activate TaskRepository
+TaskRepository -> TodoList: UPDATE Tasks SET description = ? and priority = ? and completionDate = ? WHERE id = ?
+deactivate TaskRepository
+TaskController --> SpringBoot: ResponseEntity.ok(Task)
+deactivate SpringBoot
+SpringBoot --> Frontend: ResponseEntity.ok(Task)
+deactivate Frontend
+Frontend --> Usuário: Altera as informações da tarefa
+deactivate Usuário
+@enduml

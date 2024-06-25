@@ -1,0 +1,43 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(to bottom, #0363bc, #011129);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #8ca7ff;
+  border: 1px solid rgba(255, 255, 255, 0.349);
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c4d0f786;
+  border-radius: 10px;
+  height: 30%;
+  transition: background-color 0.5s ease-in-out;
+}
+.MuiDialog-paper {
+  background-color: #021b41 !important;
+  border-radius: 10px !important;
+  border: 1px solid white !important;
+}
+.MuiOutlinedInput-root {
+  border: rgba(255, 255, 255, 0.548) solid 1px !important;
+  color: white !important;
+}
+
+.swal2-container {
+  z-index: 99999999;
+}

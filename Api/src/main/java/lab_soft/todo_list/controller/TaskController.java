@@ -16,6 +16,8 @@ import lab_soft.todo_list.enums.TaskTypeEnum;
 
 import java.util.ArrayList;
 
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
 @RestController
 @RequestMapping("/task")
 public class TaskController {
@@ -27,6 +29,7 @@ public class TaskController {
     public TaskDateService taskDateService;
 
     @GetMapping("/{id}")
+    @CrossOrigin()
     @Operation(summary = "List task found by id.")
     public ResponseEntity<TaskDto.Response> getById(@PathVariable("id") long id){
         try{
@@ -41,12 +44,14 @@ public class TaskController {
     }
 
     @GetMapping("/")
+    @CrossOrigin()
     @Operation(summary = "List all task found.")
     public ResponseEntity<ArrayList<TaskDto.Response>> getAll(){
         return new ResponseEntity<>(taskService.getAll(), HttpStatus.OK);
     }
 
     @PostMapping("/")
+    @CrossOrigin()
     @Operation(summary = "Create task in data base.")
     public ResponseEntity<TaskDto.Response> create(@RequestBody() TaskDto.Create taskDto){
       try{
@@ -58,6 +63,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    @CrossOrigin()
     @Operation(summary = "Update data task found by id.")
     public ResponseEntity<TaskDto.Response> updateById(@PathVariable("id") long id, @RequestBody() TaskDto.Update taskDto){
         try{
@@ -73,6 +79,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @CrossOrigin()
     @Operation(summary = "Delete task found by id.")
     public ResponseEntity<Void> deleteById(@PathVariable("id") long id){
         try{
@@ -87,7 +94,8 @@ public class TaskController {
 
     }
 
-    @PatchMapping("/complete/{id}")
+    @PutMapping("/complete/{id}")
+    @CrossOrigin()
     @Operation(summary = "Complete task found by id.")
     public ResponseEntity<TaskDto.Response> complete(@PathVariable("id") long id){
         try{
